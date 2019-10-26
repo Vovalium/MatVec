@@ -26,8 +26,10 @@ Matrix Matrix::eye(size_t size) {
 }
 
 Matrix::Matrix(size_t rows, size_t cols, double value):data(nullptr),rows(rows),cols(cols) {
-    if (rows * cols == 0)
+    if (rows * cols == 0) {
+        this->rows = this->cols = 0;
         return;
+    }
     data = new double[rows * cols];
     for (size_t i = 0; i < rows * cols; i++) {
         data[i] = value;
@@ -35,10 +37,10 @@ Matrix::Matrix(size_t rows, size_t cols, double value):data(nullptr),rows(rows),
 }
 
 Matrix::Matrix(const Matrix &src):data(nullptr),rows(src.rows),cols(src.cols) {
-    rows = src.rows;
-    cols = src.cols;
-    if (rows * cols == 0)
+    if (rows * cols == 0) {
+        rows = cols = 0;
         return;
+    }
     data = new double[src.rows * src.cols];
     for (size_t i = 0; i < src.rows * src.cols; i++) {
         data[i] = src.data[i];
@@ -263,7 +265,7 @@ Matrix Matrix::inv() const {
 }
 
 Vector Matrix::operator*(const Vector &vec) const {
-    Vector result(vec.size());
+    Vector result(this->rows);
     for(size_t i = 0; i< cols; ++i) {
         double temp = 0.0;
         for(size_t j = 0; j< rows; ++j) {

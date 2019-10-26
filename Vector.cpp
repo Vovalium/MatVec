@@ -28,7 +28,9 @@ Vector::Vector(const Vector &src):data(nullptr),len(src.len) {
 }
 
 Vector &Vector::operator=(const Vector &rhs) {
+    delete [] data;
     std::copy(rhs.data, rhs.data + rhs.len, data);
+    this->len = rhs.len;
     return *this;
 }
 
@@ -152,12 +154,12 @@ Vector &Vector::operator/=(double k) {
 }
 
 Vector Vector::operator*(const Matrix &mat) const {
-    Vector result(size());
-    size_t rows = get<0>(mat.shape());
-    size_t cols = get<1>(mat.shape());
-    for(size_t i = 0; i< cols; ++i) {
+    size_t rows = mat.shape().first;
+    size_t cols = mat.shape().second;
+    Vector result(cols);
+    for(size_t i = 0; i< rows; ++i) {
         double temp = 0.0;
-        for(size_t j = 0; j < rows; ++j) {
+        for(size_t j = 0; j < cols; ++j) {
             temp += data[j] * mat.get(i, j);
         }
         result[i] = temp;
@@ -166,16 +168,19 @@ Vector Vector::operator*(const Matrix &mat) const {
 }
 
 Vector &Vector::operator*=(const Matrix &mat) {
-    Vector result(size());
-    size_t rows = get<0>(mat.shape());
-    size_t cols = get<1>(mat.shape());
-    for(size_t i = 0; i< cols; ++i) {
+    size_t rows = mat.shape().first;
+    size_t cols = mat.shape().second;
+    Vector result(cols);
+    for(size_t i = 0; i< rows; ++i) {
         double temp = 0.0;
-        for(size_t j = 0; j < rows; ++j) {
+        for(size_t j = 0; j < cols; ++j) {
             temp += data[j] * mat.get(i, j);
         }
         result[i] = temp;
     }
+
+    delete[] data;
+    data = new double[cols];
 
     for(size_t i = 0; i< rows; ++i) {
         this->data[i] = result.data[i];
