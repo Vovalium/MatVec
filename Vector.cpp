@@ -155,9 +155,9 @@ Vector Vector::operator*(const Matrix &mat) const {
     Vector result(size());
     size_t rows = get<0>(mat.shape());
     size_t cols = get<1>(mat.shape());
-    for(size_t i = 0; i< rows; ++i) {
+    for(size_t i = 0; i< cols; ++i) {
         double temp = 0.0;
-        for(size_t j = 0; j < cols; ++j) {
+        for(size_t j = 0; j < rows; ++j) {
             temp += data[j] * mat.get(i, j);
         }
         result[i] = temp;
@@ -169,9 +169,9 @@ Vector &Vector::operator*=(const Matrix &mat) {
     Vector result(size());
     size_t rows = get<0>(mat.shape());
     size_t cols = get<1>(mat.shape());
-    for(size_t i = 0; i< rows; ++i) {
+    for(size_t i = 0; i< cols; ++i) {
         double temp = 0.0;
-        for(size_t j = 0; j < cols; ++j) {
+        for(size_t j = 0; j < rows; ++j) {
             temp += data[j] * mat.get(i, j);
         }
         result[i] = temp;
