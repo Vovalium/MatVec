@@ -8,6 +8,16 @@
 using namespace mat_vec;
 using namespace std;
 
+TEST_CASE("Vec Constructors", "[Vector]") {
+    Vector vecA(10, 3);
+    Vector vecB = vecA;
+    REQUIRE(vecA[2] == 3);
+    REQUIRE(vecB[8] == 3);
+
+    Vector vecC(0);
+    Vector vecD = vecC;
+}
+
 TEST_CASE( "Vector test", "[Vector]" ) {
     Vector vecA(10, 3);
     vecA[3] = 8;
@@ -136,6 +146,18 @@ TEST_CASE( "Vector * Vector", "[Vector]" ) {
     REQUIRE((vecA * vecB) == 12);
 }
 
+TEST_CASE("Mat Constructors", "[Matrix]") {
+    Matrix MatA(10, 10, 3);
+    Matrix MatB = MatA;
+    Matrix MatC(3);
+    REQUIRE(MatA[2] == 3);
+    REQUIRE(MatB[8] == 3);
+
+    Matrix MatD(0);
+    Matrix MatE = MatD;
+    Matrix MatF(0, 0, 3);
+}
+
 TEST_CASE( "Determinant test0", "[Matrix]" ) {
     Matrix matA(2);
     int matSet[4] = {4, 8, 2, 3};
@@ -238,7 +260,8 @@ TEST_CASE( "Matrix Const op * /", "[Matrix]") {
     Matrix matD(7);
     matD = matC;
     matD *= 2;
-    Matrix matG = matC * 2;
+    Matrix matG = matC;
+    matG = matC * 2;
     check1 = (matD == matG);
     REQUIRE(check1);
     matG /= 2;
@@ -360,4 +383,31 @@ TEST_CASE( "Matrix * Vector", "[Matrix, Vector]") {
     vecA *= matA;
     check = vecA == vecB;
     REQUIRE(check);
+}
+
+TEST_CASE( "Matrix Multiplication harder", "[Matrix]") {
+    Matrix matA(2, 3, 0);
+    int ASet[6] = {1, 2, 3, 4, 5, 6};
+    for (int i = 0; i < 6; ++i)
+        matA[i] = ASet[i];
+
+    Matrix matB(3, 2, 0);
+    int BSet[6] = {7, 8, 9, 10, 11, 12};
+    for (int i = 0; i < 6; ++i)
+        matB[i] = BSet[i];
+
+    Matrix matC = matB * matA;
+
+    Matrix matD(2);
+    int DSet[4] = {58, 64, 139, 154};
+    for (int i = 0; i < 4; ++i)
+        matD[i] = DSet[i];
+
+    bool check2 = matC == matD;
+
+    matB *= matA;
+
+    bool check1 = matD == matB;
+    REQUIRE(check1);
+    REQUIRE(check2);
 }

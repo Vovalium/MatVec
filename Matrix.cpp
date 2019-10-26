@@ -7,13 +7,9 @@
 using namespace mat_vec;
 using namespace std;
 
-Matrix::Matrix(size_t size, double value) {
-    rows = size;
-    cols = size;
-    if (size == 0) {
-        data = nullptr;
+Matrix::Matrix(size_t size, double value):data(nullptr),rows(size),cols(size) {
+    if (size == 0)
         return;
-    }
     data = new double[size * size];
     for (size_t i = 0; i < rows * cols; i++) {
         data[i] = value;
@@ -29,26 +25,20 @@ Matrix Matrix::eye(size_t size) {
     return(result);
 }
 
-Matrix::Matrix(size_t rows, size_t cols, double value) {
-    this->rows = rows;
-    this->cols = cols;
-    if (rows * cols == 0){
-        data = nullptr;
+Matrix::Matrix(size_t rows, size_t cols, double value):data(nullptr),rows(rows),cols(cols) {
+    if (rows * cols == 0)
         return;
-    }
     data = new double[rows * cols];
     for (size_t i = 0; i < rows * cols; i++) {
         data[i] = value;
     }
 }
 
-Matrix::Matrix(const Matrix &src) {
+Matrix::Matrix(const Matrix &src):data(nullptr),rows(src.rows),cols(src.cols) {
     rows = src.rows;
     cols = src.cols;
-    if (rows * cols == 0){
-        data = nullptr;
+    if (rows * cols == 0)
         return;
-    }
     data = new double[src.rows * src.cols];
     for (size_t i = 0; i < src.rows * src.cols; i++) {
         data[i] = src.data[i];
@@ -56,18 +46,13 @@ Matrix::Matrix(const Matrix &src) {
 }
 
 Matrix &Matrix::operator=(const Matrix &rhs) {
-    if (*this != rhs) {
-        if ((rhs.rows != rows) || (rhs.cols != cols)) {
-            delete[] data;
-            rows = 0;
-            cols = 0;
-            data = nullptr;
-            data = new double[rhs.rows * rhs.cols];
-            rows = rhs.rows;
-            cols = rhs.cols;
-        }
-        std::copy(rhs.data, rhs.data + rhs.cols * rhs.rows, data);
+    if ((rhs.rows != rows) || (rhs.cols != cols)) {
+        delete[] data;
+        data = new double[rhs.rows * rhs.cols];
+        rows = rhs.rows;
+        cols = rhs.cols;
     }
+    std::copy(rhs.data, rhs.data + rhs.cols * rhs.rows, data);
     return *this;
 }
 
@@ -132,7 +117,7 @@ Matrix Matrix::operator*(const Matrix &rhs) const {
         result.data[i] = 0.0;
         size_t x = i % cols;
         size_t y = i / cols;
-        for (size_t j = 0; j < rhs.rows; j++)
+        for (size_t j = 0; j < rhs.cols; j++)
             result.data[i] += data[j * cols + x] * rhs.data[y * rhs.cols + j];
     }
     return result;
@@ -144,7 +129,7 @@ Matrix &Matrix::operator*=(const Matrix &rhs) {
         result.data[i] = 0.0;
         size_t x = i % cols;
         size_t y = i / cols;
-        for (size_t j = 0; j < rhs.rows; j++)
+        for (size_t j = 0; j < rhs.cols; j++)
             result.data[i] += data[j * cols + x] * rhs.data[y * rhs.cols + j];
     }
 
@@ -156,7 +141,8 @@ Matrix &Matrix::operator*=(const Matrix &rhs) {
     for(size_t i = 0; i < rhs.rows * this->cols; ++i)
         data[i] = result.data[i];
 
-    this->cols = rhs.rows;
+    this->rows = result.rows;
+    this->cols = result.cols;
 
     return *this;
 }
